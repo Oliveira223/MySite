@@ -24,8 +24,14 @@ jobs:
           # Entra na pasta do projeto
           cd ~/MySite
           
-          # Atualiza o código 
-          git pull origin main
+          # Garante que o código está sincronizado com a origin/main (descarta alterações locais na VPS)
+          git fetch origin main
+          git reset --hard origin/main
+          
+          # Debug: Lista arquivos para confirmar que baixou
+          echo "=== Arquivos no app após pull ==="
+          ls -R app/
+          echo "================================="
           
           # Instala dependências (caso necessário para scripts locais)
           # npm install --production # Opcional se tudo roda no Docker
