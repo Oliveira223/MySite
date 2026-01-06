@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// --- ACADEMIA (GYM) ---
+
+model WorkoutSession {
+  id        String             @id @default(uuid())
+  date      DateTime           @default(now())
+  name      String?            // Ex: "Costas e Bíceps"
+  exercises WorkoutExercise[]  // Lista de exercícios feitos neste treino
+  createdAt DateTime           @default(now())
+}
+
+// Um exercício realizado dentro de um treino (Ex: "Puxada Alta" no treino de hoje)
+model WorkoutExercise {
+  id               String         @id @default(uuid())
+  name             String         // Nome do exercício (Ex: "Puxada Alta")
+  muscleGroup      String?        // Grupo muscular (Ex: "Costas")
+  
+  workoutSessionId String
+  workoutSession   WorkoutSession @relation(fields: [workoutSessionId], references: [id], onDelete: Cascade)
+  
+  sets             ExerciseSet[]  // Lista de séries (20x30kg, 10x40kg...)
+}
+
+// Uma série individual
+model ExerciseSet {
+  id                String          @id @default(uuid())
+  weight            Float           // Carga
+  reps              Int             // Repetições
+  order             Int             // Ordem da série (1, 2, 3...)
+  
+  workoutExerciseId String
+  workoutExercise   WorkoutExercise @relation(fields: [workoutExerciseId], references: [id], onDelete: Cascade)
+}
+
+// --- ESTUDOS (STUDY) ---
+
+// Matéria/Cadeira (ex: Cálculo I, História)
+model StudySubject {
+  id        String         @id @default(uuid())
+  name      String
+  color     String         @default("#3b82f6") // Cor para UI (ex: blue-500)
+  goal      Int?           // Meta de minutos semanais (opcional)
+  sessions  StudySession[]
+  tasks     StudyTask[]
+  grades    StudyGrade[]
+  createdAt DateTime       @default(now())
+}
+
+// Sessão de Estudo (Bloco de tempo focado)
+model StudySession {
+  id        String       @id @default(uuid())
+  date      DateTime     @default(now())
+  duration  Int          // Tempo em minutos
+  notes     String?      // O que foi estudado
+  
+  subjectId String
+  subject   StudySubject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+}
+
+// Tarefas, Provas e Trabalhos
+model StudyTask {
+  id        String        @id @default(uuid())
+  title     String
+  dueDate   DateTime?     // Data de entrega/prova
+  status    String        @default("PENDING") // PENDING, DONE
+  type      String        @default("TASK")    // TASK, EXAM, ASSIGNMENT
+  priority  String        @default("MEDIUM")  // LOW, MEDIUM, HIGH
+  
+  subjectId String?
+  subject   StudySubject? @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  
+  createdAt DateTime      @default(now())
+}
+
+// Notas e Avaliações
+model StudyGrade {
+  id        String       @id @default(uuid())
+  name      String       // ex: "P1", "Trabalho Final"
+  value     Float        // Nota tirada
+  maxValue  Float        // Nota máxima possível
+  weight    Float        @default(1.0) // Peso da nota (1 = normal, 2 = peso 2, etc)
+  
+  subjectId String
+  subject   StudySubject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  
+  date      DateTime     @default(now())
+}
