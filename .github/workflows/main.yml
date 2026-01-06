@@ -24,7 +24,7 @@ jobs:
           # Entra na pasta do projeto
           cd ~/MySite
           
-          # Atualiza o código
+          # Atualiza o código 
           git pull origin main
           
           # Instala dependências (caso necessário para scripts locais)
