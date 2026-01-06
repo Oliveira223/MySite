@@ -24,13 +24,39 @@ jobs:
           # Entra na pasta do projeto
           cd ~/MySite
           
-          # Garante que o código está sincronizado com a origin/main (descarta alterações locais na VPS)
-          git fetch origin main
+          echo "=== DIAGNÓSTICO DE DEPLOY ==="
+          echo "Diretório atual:"
+          pwd
+          
+          echo "Remote URL:"
+          git remote -v
+          
+          echo "Commit ATUAL (Antes do Pull):"
+          git log -1 --format="%h - %s"
+          
+          echo "Tentando buscar atualizações do GitHub..."
+          if ! git fetch origin main; then
+              echo "❌ ERRO CRÍTICO: Não foi possível baixar o código do GitHub."
+              echo "Verifique se a VPS tem permissão para acessar o repositório (SSH Key ou Token)."
+              exit 1
+          fi
+          
+          echo "Resetando para a versão mais recente (origin/main)..."
           git reset --hard origin/main
           
-          # Debug: Lista arquivos para confirmar que baixou
-          echo "=== Arquivos no app após pull ==="
-          ls -R app/
+          echo "Commit NOVO (Após Reset):"
+          git log -1 --format="%h - %s"
+          
+          echo "=== VERIFICAÇÃO DE ARQUIVOS ==="
+          if [ -d "app/vps" ]; then
+              echo "✅ SUCESSO: Pasta 'app/vps' encontrada!"
+              ls -R app/vps
+          else
+              echo "❌ ERRO: A pasta 'app/vps' NÃO existe após a atualização."
+              echo "Isso significa que o GitHub (origin/main) não tem essa pasta."
+              echo "Conteúdo de app/:"
+              ls -F app/
+          fi
           echo "================================="
           
           # Instala dependências (caso necessário para scripts locais)
