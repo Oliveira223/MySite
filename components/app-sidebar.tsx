@@ -14,7 +14,8 @@ import {
   LayoutGrid,
   GraduationCap,
   ListTodo,
-  Calendar
+  Calendar,
+  Server
 } from "lucide-react"
 
 import {
@@ -44,6 +45,11 @@ const mainItems = [
     title: "Estudos",
     url: "/studies",
     icon: GraduationCap,
+  },
+  {
+    title: "VPS",
+    url: "/vps",
+    icon: Server,
   },
 ]
 
@@ -151,16 +157,19 @@ export function AppSidebar() {
           <SidebarGroupLabel>{currentLabel}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {currentItems.map((item) => (
+              {currentItems.map((item) => {
+                const variant = 'variant' in item ? item.variant : undefined
+                
+                return (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <Link href={item.url} className={item.variant === 'secondary' ? 'text-muted-foreground' : ''}>
+                    <Link href={item.url} className={variant === 'secondary' ? 'text-muted-foreground' : ''}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
+              )})}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

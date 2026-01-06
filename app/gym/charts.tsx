@@ -8,12 +8,12 @@ export function VolumeChart({ data }: { data: { name: string; volume: number }[]
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data}>
-        <XAxis 
-          dataKey="name" 
-          stroke="#888888" 
-          fontSize={12} 
-          tickLine={false} 
-          axisLine={false} 
+        <XAxis
+          dataKey="name"
+          stroke="#888888"
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
         />
         <YAxis
           stroke="#888888"
@@ -22,11 +22,11 @@ export function VolumeChart({ data }: { data: { name: string; volume: number }[]
           axisLine={false}
           tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
         />
-        <Tooltip 
-            cursor={{ fill: 'transparent' }}
-            contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px', border: '1px solid hsl(var(--border))' }}
-            itemStyle={{ color: 'hsl(var(--foreground))' }}
-            formatter={(value: number) => [`${value.toLocaleString('pt-BR')} kg`, 'Volume Total']}
+        <Tooltip
+          cursor={{ fill: 'transparent' }}
+          contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px', border: '1px solid hsl(var(--border))' }}
+          itemStyle={{ color: 'hsl(var(--foreground))' }}
+          formatter={(value: number | undefined) => [`${(value || 0).toLocaleString('pt-BR')} kg`, 'Volume Total']}
         />
         <Bar
           dataKey="volume"
@@ -40,28 +40,28 @@ export function VolumeChart({ data }: { data: { name: string; volume: number }[]
 }
 
 export function MuscleDistributionChart({ data }: { data: { name: string; value: number }[] }) {
-    return (
-      <ResponsiveContainer width="100%" height={300}>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            innerRadius={60}
-            outerRadius={80}
-            paddingAngle={5}
-            dataKey="value"
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip 
-              contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px', border: '1px solid hsl(var(--border))' }}
-              itemStyle={{ color: 'hsl(var(--foreground))' }}
-          />
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
-    )
-  }
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <PieChart>
+        <Pie
+          data={data}
+          cx="50%"
+          cy="50%"
+          innerRadius={60}
+          outerRadius={80}
+          paddingAngle={5}
+          dataKey="value"
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip
+          contentStyle={{ backgroundColor: 'hsl(var(--card))', borderRadius: '8px', border: '1px solid hsl(var(--border))' }}
+          itemStyle={{ color: 'hsl(var(--foreground))' }}
+        />
+        <Legend />
+      </PieChart>
+    </ResponsiveContainer>
+  )
+}

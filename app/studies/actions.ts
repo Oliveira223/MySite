@@ -21,9 +21,18 @@ export async function getSubjects() {
     const totalWeight = sub.grades.reduce((acc, g) => acc + g.weight, 0)
     const weightedSum = sub.grades.reduce((acc, g) => acc + ((g.value / g.maxValue) * 10) * g.weight, 0)
 
+    const now = new Date()
+    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()))
+    startOfWeek.setHours(0, 0, 0, 0)
+
+    const minutesThisWeek = sub.sessions
+        .filter(s => s.date >= startOfWeek)
+        .reduce((acc, s) => acc + s.duration, 0)
+
     return {
       ...sub,
       totalMinutes: sub.sessions.reduce((acc, s) => acc + s.duration, 0),
+      minutesThisWeek,
       averageGrade: totalWeight > 0 ? weightedSum / totalWeight : null
     }
   })

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createWorkoutSession, addExerciseToWorkout, addSetToExercise, deleteSet } from './actions'
+import { createWorkoutSession, addExerciseToWorkout, addSetToExercise, deleteSet, deleteWorkoutExercise } from './actions'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

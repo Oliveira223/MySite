@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  mysite:
+    build: .
+    container_name: mysite_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      # Sobrescreve a URL do banco para usar o caminho dentro do container
+      - DATABASE_URL=file:/app/db/prod.db
+      - NODE_ENV=production
+    volumes:
+      # Salva o banco de dados SQLite na pasta 'db_data' do host para não perder dados
+      - ./db_data:/app/db
