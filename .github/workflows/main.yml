@@ -1,0 +1,42 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to VPS via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: 22
+        script: |
+          # Entra na pasta do projeto
+          cd ~/MySite
+          
+          # Atualiza o código
+          git pull origin main
+          
+          # Instala dependências (caso necessário para scripts locais)
+          # npm install --production # Opcional se tudo roda no Docker
+          
+          # Reconstrói e reinicia o container usando Docker Compose
+          # Se não tiver docker compose plugin (v2), tenta docker-compose (v1)
+          if docker compose version >/dev/null 2>&1; then
+            docker compose up -d --build
+          else
+            docker-compose up -d --build
+          fi
+          
+          # Limpa imagens antigas para economizar espaço
+          docker image prune -f
