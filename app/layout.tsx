@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Meu Painel Pessoal",
-  description: "Gerenciado por Trae",
+  description: "",
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
           <AppSidebar />
           <main className="w-full flex flex-col min-h-screen">
             <div className="px-4 pt-4 pb-0">
-               <SidebarTrigger />
+              <SidebarTrigger />
             </div>
             {children}
           </main>
