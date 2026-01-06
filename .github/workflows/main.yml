@@ -28,17 +28,27 @@ jobs:
           echo "Diretório atual:"
           pwd
           
+          # Verifica se é um repositório git, se não for, inicializa
+          if [ ! -d ".git" ]; then
+            echo "⚠️ AVISO: Diretório não é um repositório Git. Inicializando..."
+            git init
+            git remote add origin https://github.com/${{ github.repository }}.git
+            echo "Remote adicionado: https://github.com/${{ github.repository }}.git"
+          fi
+          
           echo "Remote URL:"
           git remote -v
           
-          echo "Commit ATUAL (Antes do Pull):"
-          git log -1 --format="%h - %s"
-          
           echo "Tentando buscar atualizações do GitHub..."
+          # Fetch forçado
           if ! git fetch origin main; then
               echo "❌ ERRO CRÍTICO: Não foi possível baixar o código do GitHub."
-              echo "Verifique se a VPS tem permissão para acessar o repositório (SSH Key ou Token)."
-              exit 1
+              echo "Tentativa de correção: Resetando URL do remote..."
+              git remote set-url origin https://github.com/${{ github.repository }}.git
+              if ! git fetch origin main; then
+                 echo "❌ FALHA DUPLA: Ainda não consigo acessar o repositório."
+                 exit 1
+              fi
           fi
           
           echo "Resetando para a versão mais recente (origin/main)..."
